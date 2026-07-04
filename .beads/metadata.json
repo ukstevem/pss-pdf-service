@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "pss_pdf_service",
+  "project_id": "a1aa7bfb-4a55-4f08-ac63-cb61a3648923"
+}
