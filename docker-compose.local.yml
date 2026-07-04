@@ -1,0 +1,16 @@
+# Local test stack. Usage:
+#   docker compose -f docker-compose.local.yml up --build -d
+#   curl -X POST localhost:8017/render -H "X-Api-Key: localdev" \
+#     -H "Content-Type: application/json" -d '{"html":"<h1>Hi</h1>"}' -o out.pdf
+services:
+  pdf-service:
+    build: .
+    container_name: pss-pdf-service-local
+    restart: unless-stopped
+    environment:
+      PORT: 8017
+      PDF_SERVICE_API_KEY: ${PDF_SERVICE_API_KEY:-localdev}
+      MAX_HTML_BYTES: ${MAX_HTML_BYTES:-2000000}
+      RENDER_TIMEOUT_MS: ${RENDER_TIMEOUT_MS:-30000}
+    ports:
+      - "8017:8017"
