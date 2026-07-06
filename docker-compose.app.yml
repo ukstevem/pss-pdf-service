@@ -1,0 +1,23 @@
+# Production stack — Orin (10.0.0.74), port 8017 (platform-portal docs/PORTS.md).
+# Internal-only service: no gateway route, callers are pss-document-service
+# and PSS apps' server sides.
+#
+# Deploy:
+#   docker compose -f docker-compose.app.yml pull
+#   docker compose -f docker-compose.app.yml up -d
+# Rollback: pin image to a previous sha tag and `up -d`.
+services:
+  pdf-service:
+    image: ghcr.io/ukstevem/pss-pdf-service:${IMAGE_TAG:-latest}
+    container_name: pss-pdf-service
+    restart: unless-stopped
+    environment:
+      PORT: 8017
+      PDF_SERVICE_API_KEY: ${PDF_SERVICE_API_KEY:?set in stack env}
+      MAX_HTML_BYTES: ${MAX_HTML_BYTES:-2000000}
+      RENDER_TIMEOUT_MS: ${RENDER_TIMEOUT_MS:-30000}
+    ports:
+      - "8017:8017"
+    # Chromium renders are memory-spiky; cap so a runaway render can't
+    # starve the doc-service on the same host.
+    mem_limit: 1500m
